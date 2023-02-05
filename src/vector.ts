@@ -6,4 +6,14 @@ export default class Vector {
     this.x = x;
     this.y = y;
   }
+
+  get length() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  set length(value) {
+    const fact = value / this.length;
+    this.x *= fact;
+    this.y *= fact;
+  }
 }
