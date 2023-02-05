@@ -1,24 +1,14 @@
 import Vector from './vector';
 
 export default class Rectangle {
-  public canvas: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
   public color: string;
   public position: Vector;
   public size: Vector;
 
-  constructor(
-    width: number,
-    height: number,
-    color: string,
-    context: CanvasRenderingContext2D,
-    canvas: HTMLCanvasElement
-  ) {
+  constructor(width: number, height: number, color: string) {
     this.color = color;
     this.position = new Vector();
     this.size = new Vector(width, height);
-    this.context = context;
-    this.canvas = canvas;
   }
 
   get left() {

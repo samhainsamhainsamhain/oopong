@@ -16,7 +16,7 @@ export default class Pong {
     this._canvas = canvas;
     this._context = context;
 
-    this.ball = new Ball('red', this._context, this._canvas);
+    this.ball = new Ball('red');
 
     this.ball.position.x = 400;
     this.ball.position.y = 100;
