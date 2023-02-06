@@ -6,13 +6,18 @@
 
 html,
 body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: #222222;
 }
 
 #app {
   height: 100%;
-  max-width: 600px;
+  max-width: 800px;
   max-height: 600px;
+  border: 1px solid #fff;
 }
