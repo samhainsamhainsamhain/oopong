@@ -138,10 +138,10 @@ export default class Pong {
 
   collide(player: Player, ball: Ball) {
     if (
-      player.left < ball.right &&
-      player.right > ball.left &&
-      player.top < ball.bottom &&
-      player.bottom > ball.top
+      player.left <= ball.right &&
+      player.right >= ball.left &&
+      player.top <= ball.bottom &&
+      player.bottom >= ball.top
     ) {
       const length = ball.velocity.length;
 
