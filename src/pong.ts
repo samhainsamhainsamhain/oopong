@@ -145,6 +145,8 @@ export default class Pong {
     ) {
       const length = ball.velocity.length;
 
+      ball.position.x = ball.velocity.x < 0 ? 60 : this._canvas.width - 60;
+
       ball.velocity.x *= -1;
       ball.velocity.y = 300 * (Math.random() - 0.5);
 
