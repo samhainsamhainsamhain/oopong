@@ -3,9 +3,13 @@ import Player from './player';
 import Rectangle from './rectangle';
 
 export default class Pong {
+  private ball: Ball;
+  private callback: (ms: number) => void;
+  private CHAR_PIXEL: number;
+  private CHARS: HTMLCanvasElement[];
+
   public _canvas: HTMLCanvasElement;
   public _context: CanvasRenderingContext2D;
-  private ball: Ball;
   public players: Player[];
 
   constructor(canvasName: string) {
@@ -30,17 +34,52 @@ export default class Pong {
       (player) => (player.position.y = this._canvas.height / 2)
     );
 
-    let lastTime: number | undefined;
-    const callback = (ms: number) => {
-      if (lastTime) {
-        this.update((ms - lastTime) / 1000);
+    let lastTime: number | null = null;
+    this.callback = (ms: number) => {
+      if (lastTime !== null) {
+        const diff = ms - lastTime;
+        this.update(diff / 1000);
       }
 
       lastTime = ms;
-      requestAnimationFrame(callback.bind(this));
+      requestAnimationFrame(this.callback);
     };
 
-    callback(0);
+    this.CHAR_PIXEL = 10;
+    this.CHARS = [
+      '111101101101111',
+      '010010010010010',
+      '111001111100111',
+      '111001111001111',
+      '101101111001001',
+      '111100111001111',
+      '111100111101111',
+      '111001001001001',
+      '111101111101111',
+      '111101111001111',
+    ].map((string) => {
+      const canvas = document.createElement('canvas');
+      const size = this.CHAR_PIXEL;
+      canvas.height = size * 5;
+      canvas.width = size * 3;
+      const context = canvas.getContext('2d');
+
+      context!.fillStyle = '#fff';
+      string.split('').forEach((fill, index) => {
+        if (fill === '1') {
+          context!.fillRect(
+            (index % 3) * size,
+            ((index / 3) | 0) * size,
+            size,
+            size
+          );
+        }
+      });
+
+      return canvas;
+    });
+
+    this.callback(0);
 
     this.reset();
   }
@@ -63,6 +102,8 @@ export default class Pong {
     this.clear();
     this.drawRectangle(this.ball);
     this.players.forEach((player) => this.drawRectangle(player));
+
+    this.drawScore();
   }
 
   drawRectangle(rectangle: Rectangle) {
@@ -75,6 +116,26 @@ export default class Pong {
     );
   }
 
+  drawScore() {
+    const align = this._canvas.width / 3;
+    const charWidth = this.CHAR_PIXEL * 3;
+    this.players.forEach((player, index) => {
+      const chars = player.score.toString().split('');
+      const offset =
+        align * (index + 1) -
+        ((charWidth * chars.length) / 2 + this.CHAR_PIXEL) / 2;
+      chars.forEach((char, position) => {
+        if (this.CHARS !== undefined) {
+          this._context.drawImage(
+            this.CHARS[+char],
+            offset + position * charWidth,
+            20
+          );
+        }
+      });
+    });
+  }
+
   collide(player: Player, ball: Ball) {
     if (
       player.left < ball.right &&
@@ -85,7 +146,7 @@ export default class Pong {
       const length = ball.velocity.length;
 
       ball.velocity.x *= -1;
-      ball.velocity.y = 200 * (Math.random() - 0.5);
+      ball.velocity.y = 300 * (Math.random() - 0.5);
 
       ball.velocity.length = length * 1.05;
     }
@@ -102,10 +163,10 @@ export default class Pong {
   start() {
     if (this.ball.velocity.x !== 0 || this.ball.velocity.y !== 0) return;
 
-    this.ball.velocity.x = Math.random() < 0.5 ? 200 : -200;
-    this.ball.velocity.y = Math.random() * 200;
+    this.ball.velocity.x = Math.random() < 0.5 ? 300 : -300;
+    this.ball.velocity.y = Math.random() * 300;
 
-    this.ball.velocity.length = 200;
+    this.ball.velocity.length = 300;
   }
 
   update(dt: number = 0) {
